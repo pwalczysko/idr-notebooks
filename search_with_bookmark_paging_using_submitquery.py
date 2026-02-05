@@ -26,10 +26,11 @@ import sys
 
 # search url
 # submit_query_url = f"{base_url}resources/submitquery/"  # noqa
-# submit_query_url_new = f"https://134.36.7.77/searchengine/api/v1/resources/submitquery/"
-submit_query_url_new = f"https://idr.openmicroscopy.org/searchengine/api/v1/resources/submitquery/"
+submit_query_url_new = f"https://134.36.7.77/searchengine/api/v1/resources/submitquery/"
+# submit_query_url_new = f"https://idr.openmicroscopy.org/searchengine/api/v1/resources/submitquery/"
 submit_query_url_old = f"https://idr-testing.openmicroscopy.org/searchengine/api/v1/resources/submitquery/"
-submit_query_urls = [submit_query_url_new, submit_query_url_old]
+# submit_query_urls = [submit_query_url_new, submit_query_url_old]
+submit_query_urls = [submit_query_url_old, submit_query_url_new]
 # https://134.36.7.77/searchengine/api/v1/resources/image/search/?key=Organism&value=drosophila
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
@@ -95,11 +96,20 @@ for submit_query_url in submit_query_urls:
     and_filters = [
         {
             "name": "Organism",
+            # "name": "Compound name",
+            # "name": "Cell line",
+            # "name": "Antibody Identifier", 
+            # "name": "Antibody Name",
+            # "name": "Gene Symbol", 
+            # "name": "Phenotype",   
+            "value": "Danio rerio",
             # "value": "Homo sapiens",
             # "value": "Drosophila melanogaster",
-            "value": "Danio rerio",
+            # "value": "Mus musculus",
+            # "value": "Danio rerio",
             "operator": "equals",
             "resource": "image",
+            # "resource": "container",
         },
         # {
         #     "name": "Organism Part",
@@ -142,9 +152,11 @@ for submit_query_url in submit_query_urls:
             % (bookmark, page, total_pages, len(received_results), total_results)
         )
         bookmark = next_bookmark
+        # print (received_results)
 
     # print (submit_query_url)
     results.append(received_results)
+
 
 def dict_compare(d1, d2):
     d1_keys = set(d1.keys())
@@ -170,7 +182,8 @@ def dict_compare(d1, d2):
 
 # print (results[0][0])
 
-print (len(results[0]), len(results[1]))
+# print (len(results[0]), len(results[1]))
+print (results[0][0]['key_values'][0]['value'])
 assert len(results[0]) == len(results[1])
 for i in range (0, len(results[0])):    
     added, removed, modified, same = dict_compare(results[0][i], results[1][i])
@@ -179,5 +192,6 @@ for i in range (0, len(results[0])):
     # print (modified)
     # print (removed)
     assert len(added) == 0
-    assert len(removed) == 3
+    assert len(removed) == 0
     assert len(modified) == 0
+    # print (i, "comparing")
